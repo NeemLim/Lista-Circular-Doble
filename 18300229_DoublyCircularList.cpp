@@ -49,7 +49,7 @@ public:
 			} while (cursor->nextLink != beginning);  //while first value is not found again
 
 			cursor->nextLink = newNode;	//create new node on last element
-			newNode->prevLink = cursor;	//point new node to prevElement
+			newNode->prevLink = cursor;	//point new node to join
 			newNode->nextLink = beginning;	//point it back to the beginning
 			beginning->prevLink = newNode; //point beginning to last element
 		}
@@ -135,7 +135,7 @@ public:
 		if (dataPos > -1) //If element was found, execute erase function.
 		{
 			Node* erase = beginning,
-				* prevElement = nullptr;
+				* join = nullptr;
 
 			if (dataPos == 0) //If first element is deleted.
 			{
@@ -143,21 +143,23 @@ public:
 					beginning = nullptr;
 				else
 				{
-					prevElement = beginning->prevLink;			//Get Last Item
-					beginning = beginning->nextLink;			//Second item is now first
-					beginning->prevLink = prevElement;			//New first points back to last.
-					prevElement->nextLink = beginning;			//Last item now points to new first
+					join = beginning->prevLink;			//Get Last Item
+					beginning = beginning->nextLink;	//Second item is now first
+					beginning->prevLink = join;			//New first points back to last.
+					join->nextLink = beginning;			//Last item now points to new first
 					delete erase;	//Delete beginning
 				}
 			}
 			else
 			{
-				for (int i = 0; i < dataPos; i++)
-				{
-					prevElement = erase;
+				for (int i = 0; i < dataPos; i++)	//Iterates until if finds delete.
 					erase = erase->nextLink;
-				}
-				prevElement->nextLink = erase->nextLink;	//Prev element points to element next to erase.
+
+				join = erase->prevLink;	//Cursor moves 1 position before erase
+				join->nextLink = erase->nextLink; //Link now points to element after erase
+
+				join = erase->nextLink;	//Cursor moves 1 position after erase
+				join->prevLink = erase->prevLink; //Link points now position before element to erase
 				delete erase;
 			}
 			cout << "\n>Value found and deleted successfully." << endl;
