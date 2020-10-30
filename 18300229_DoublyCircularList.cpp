@@ -143,11 +143,10 @@ public:
 					beginning = nullptr;
 				else
 				{
-					prevElement = beginning;				//Save first item.
-					for (int i = 0; i < count() - 1; i++)
-						prevElement = prevElement->nextLink;	//Gets last item.
+					prevElement = beginning->prevLink;			//Get Last Item
 					beginning = beginning->nextLink;			//Second item is now first
-					prevElement->nextLink = beginning;			//Last item now points to second
+					beginning->prevLink = prevElement;			//New first points back to last.
+					prevElement->nextLink = beginning;			//Last item now points to new first
 					delete erase;	//Delete beginning
 				}
 			}
