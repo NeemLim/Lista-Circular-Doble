@@ -98,7 +98,7 @@ public:
 	{
 		int elementCount = 0;
 		Node* cursor = beginning;
-		if (beginning != NULL)		//Checks if list is empty.
+		if (beginning)		//Checks if list is empty.
 		{
 			do
 			{
@@ -170,10 +170,10 @@ public:
 
 	void deleteEverything() //Clears list.
 	{
-		Node* erase;
-		int	getCount = count();
+		Node* erase = nullptr,
+			* lastElement = beginning->prevLink;
 
-		for (int i = 0; i < getCount; i++)	//Deletes all elements using it's count.
+		while (beginning != lastElement)	//while beginning is not last element.
 		{
 			erase = beginning;
 			beginning = beginning->nextLink;
