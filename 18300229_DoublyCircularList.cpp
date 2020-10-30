@@ -11,10 +11,12 @@ class List	//Contains the activities of the list.
 	{
 	public:
 		T data = NULL; //Holds a generic data value.
-		Node* link; //Points to the next element.
+		Node* nextLink,
+			* prevLink; //Points to the next element.
 		Node()
 		{
-			link = nullptr;
+			nextLink = nullptr;
+			prevLink = nullptr;
 		}
 	};
 
@@ -35,18 +37,21 @@ public:
 		if (beginning == nullptr)
 		{
 			beginning = newNode;
-			beginning->link = beginning;	//beginning points to itself.
+			beginning->nextLink = beginning;	//beginning points to itself.
+			beginning->prevLink = beginning;
 		}
 		else
 		{
 			cursor = beginning;
 			do
 			{
-				cursor = cursor->link;
-			} while (cursor->link != beginning);  //while first value is not found again
+				cursor = cursor->nextLink;
+			} while (cursor->nextLink != beginning);  //while first value is not found again
 
-			cursor->link = newNode;	//create new node on last element
-			newNode->link = beginning;	//point it back to the beginning
+			cursor->nextLink = newNode;	//create new node on last element
+			newNode->prevLink = cursor;	//point new node to prevElement
+			newNode->nextLink = beginning;	//point it back to the beginning
+			beginning->prevLink = newNode; //point beginning to last element
 		}
 	}
 	T getValue(T index)	//Returns data in node.
@@ -55,7 +60,7 @@ public:
 		{
 			Node* cursor = beginning;
 			for (int i = 0; i < index; i++)
-				cursor = cursor->link;
+				cursor = cursor->nextLink;
 			return cursor->data;
 		}
 		return beginning->data;
@@ -79,9 +84,9 @@ public:
 	//		for (int j = 0; j < 3; j++)
 	//		{
 	//			cout << "Item [" << i + j + 1 << "] = " << cursor->data << endl;
-	//			if (cursor->link == nullptr)
+	//			if (cursor->nextLink == nullptr)
 	//				break;
-	//			cursor = cursor->link;
+	//			cursor = cursor->nextLink;
 	//		}
 	//		if (i + 3 >= count())
 	//			break;
@@ -98,8 +103,8 @@ public:
 			do
 			{
 				elementCount++;
-				cursor = cursor->link;
-			} while (cursor != beginning);	//While link does not point back to first item.
+				cursor = cursor->nextLink;
+			} while (cursor != beginning);	//While nextLink does not point back to first item.
 		}
 		return elementCount;
 	}
@@ -114,7 +119,7 @@ public:
 			Node* cursor = beginning;
 			cout << "Input the updated value: "; cin >> valueToReplace;
 			for (int i = 0; i < valuePos; i++)
-				cursor = cursor->link;
+				cursor = cursor->nextLink;
 			cursor->data = valueToReplace;
 
 			cout << "\n>Value replaced successfully." << endl;
@@ -140,9 +145,9 @@ public:
 				{
 					prevElement = beginning;				//Save first item.
 					for (int i = 0; i < count() - 1; i++)
-						prevElement = prevElement->link;	//Gets last item.
-					beginning = beginning->link;			//Second item is now first
-					prevElement->link = beginning;			//Last item now points to second
+						prevElement = prevElement->nextLink;	//Gets last item.
+					beginning = beginning->nextLink;			//Second item is now first
+					prevElement->nextLink = beginning;			//Last item now points to second
 					delete erase;	//Delete beginning
 				}
 			}
@@ -151,9 +156,9 @@ public:
 				for (int i = 0; i < dataPos; i++)
 				{
 					prevElement = erase;
-					erase = erase->link;
+					erase = erase->nextLink;
 				}
-				prevElement->link = erase->link;	//Prev element points to element next to erase.
+				prevElement->nextLink = erase->nextLink;	//Prev element points to element next to erase.
 				delete erase;
 			}
 			cout << "\n>Value found and deleted successfully." << endl;
@@ -170,7 +175,7 @@ public:
 		for (int i = 0; i < getCount; i++)	//Deletes all elements using it's count.
 		{
 			erase = beginning;
-			beginning = beginning->link;
+			beginning = beginning->nextLink;
 			delete erase;
 		}
 		beginning = nullptr;	//confirms deletion by setting beginning as NULL;
